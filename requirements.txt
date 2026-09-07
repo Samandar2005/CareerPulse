@@ -1,42 +1,39 @@
-# Web Framework & Server
-fastapi
-uvicorn[standard]
-python-multipart
+# Web Framework & Async Server
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+python-multipart>=0.0.9
 
-# Database & Vector Store
-sqlalchemy
-asyncpg
-pgvector
-alembic
+# Database & Vector Extension
+sqlalchemy[asyncio]>=2.0.28
+asyncpg>=0.29.0
+pgvector>=0.2.5
+alembic>=1.13.1
 
-# Data Validation & Settings
-pydantic
-pydantic-settings
-python-dotenv
+# Data Validation & Configuration
+pydantic>=2.6.4
+pydantic-settings>=2.2.1
+python-dotenv>=1.0.1
 
 # Authentication & Security
-pyjwt
-passlib[bcrypt]
+pyjwt>=2.8.0
 
-# Async Tasks & Caching
-celery
-redis>=5.0.0
+# Async Background Tasks & Caching
+celery>=5.3.6
+redis>=5.0.3
 
-# Storage & Third-Party
-boto3
-# stripe>=8.0.0
-# fastapi-mail
+# Third-Party API Client
+httpx>=0.27.0
 
-# Data Parsing
-pypdf
-pymupdf
-docx2txt
-beautifulsoup4
+# Document Parsing & Processing
+pypdf>=4.1.0
+pymupdf>=1.24.0
+docx2txt>=0.8
+beautifulsoup4>=4.12.3
 
-# RAG & LLM Orchestration
-langchain
-langchain-groq
+# RAG & LLM Integration (Jina AI & Groq)
+langchain>=0.1.12
+langchain-community>=0.0.28
+langchain-groq>=0.1.0
 
-# Testing
-pytest
-httpx
+# Testing & Development
+pytest>=8.1.1
