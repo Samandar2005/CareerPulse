@@ -1,0 +1,42 @@
+# Web Framework & Server
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Database & Vector Store
+sqlalchemy
+asyncpg
+pgvector
+alembic
+
+# Data Validation & Settings
+pydantic
+pydantic-settings
+python-dotenv
+
+# Authentication & Security
+pyjwt
+passlib[bcrypt]
+
+# Async Tasks & Caching
+celery
+redis>=5.0.0
+
+# Storage & Third-Party
+boto3
+# stripe>=8.0.0
+# fastapi-mail
+
+# Data Parsing
+pypdf
+pymupdf
+docx2txt
+beautifulsoup4
+
+# RAG & LLM Orchestration
+langchain
+langchain-groq
+
+# Testing
+pytest
+httpx
