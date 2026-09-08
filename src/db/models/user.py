@@ -6,7 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 
 from src.db.models.base import TimeStampedModel
-# from src.db.models.document import Document
 
 class UserRole(str, Enum):
     ADMIN = "admin"
@@ -50,8 +49,8 @@ class User(TimeStampedModel):
         nullable=False,
     )
 
-    # documents: Mapped[list["Document"]] = relationship(
-    #     "Document",
-    #     back_populates="user",
-    #     cascade="all, delete-orphan",
-    # )
+    documents: Mapped[list["Document"]] = relationship(
+        "Document",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
