@@ -10,9 +10,9 @@ settings = get_settings()
 
 async_engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=settings.DEBUG,          
-    expire_on_commit=False,    
+    echo=settings.DEBUG
 )
+
 
 async_session_factory = async_sessionmaker(
     bind=async_engine,

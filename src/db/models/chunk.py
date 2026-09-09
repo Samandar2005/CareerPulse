@@ -10,16 +10,10 @@ from src.db.models.document import Document
 class Chunk(TimeStampedModel):
     __tablename__ = "chunks"
 
-    document_id: Mapped[UUID] = mapped_column(
-        ForeignKey("documents.id"),
-        nullable=False,
-        index=True,
-    )
+    document_id: Mapped[UUID] = mapped_column(ForeignKey("documents.id", ondelete="CASCADE"))
 
-    document: Mapped["Document"] = relationship(
-        "Document",
-        back_populates="chunks",
-    )
+    document: Mapped["Document"] = relationship("Document", back_populates="chunks")
+
 
     content: Mapped[str] = mapped_column(
         Text,

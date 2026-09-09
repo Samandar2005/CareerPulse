@@ -3,9 +3,9 @@ from enum import Enum
 from sqlalchemy import String, Enum as SQLEnum, Boolean
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List
 
 from src.db.models.base import TimeStampedModel
+from typing import List
 
 class UserRole(str, Enum):
     ADMIN = "admin"
@@ -49,7 +49,7 @@ class User(TimeStampedModel):
         nullable=False,
     )
 
-    documents: Mapped[list["Document"]] = relationship(
+    documents: Mapped[List["Document"]] = relationship(
         "Document",
         back_populates="user",
         cascade="all, delete-orphan",
