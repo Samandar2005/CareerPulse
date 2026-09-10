@@ -7,6 +7,7 @@ from src.db.models.user import User, UserRole
 from src.modules.auth.jwt import JWTManager
 from src.modules.auth.password import hash_password, verify_password
 from src.modules.auth.schemas import TokenResponse, UserLoginRequest, UserRegisterRequest
+from src.modules.auth.google import GoogleAuthVerifier
 
 
 class AuthService:
@@ -109,5 +110,54 @@ class AuthService:
         return TokenResponse(
             access_token=access_token,
             refresh_token=new_refresh_token,
+            token_type="bearer",
+        )
+    
+    
+    @classmethod
+    async def authenticate_google(
+        cls, id_token: str, session: AsyncSession
+    ) -> TokenResponse:
+        """
+        Google ID token orqali foydalanuvchini autentifikatsiya qilish yoki yaratish.
+        """
+        google_user = GoogleAuthVerifier.verify_token(id_token)
+
+        email = google_user.get("email")
+        if not email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Google akkountida email manzili topilmadi",
+            )
+
+        result = await session.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            user = User(
+                email=email,
+                password_hash=None, 
+                first_name=google_user.get("given_name", ""),
+                last_name=google_user.get("family_name", ""),
+                role=UserRole.USER,
+                is_active=True,
+            )
+            session.add(user)
+            await session.commit()
+            await session.refresh(user)
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Foydalanuvchi hisobi bloklangan",
+            )
+
+        # 5. CareerPulse JWT tokenlarini yaratish
+        access_token = JWTManager.create_access_token(user)
+        refresh_token = JWTManager.create_refresh_token(user)
+
+        return TokenResponse(
+            access_token=access_token,
+            refresh_token=refresh_token,
             token_type="bearer",
         )

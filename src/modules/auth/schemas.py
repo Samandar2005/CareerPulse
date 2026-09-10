@@ -19,9 +19,7 @@ class UserLoginRequest(BaseModel):
 
 
 class GoogleAuthRequest(BaseModel):
-    """Google OAuth2 token yetkazib berish body'si."""
-
-    token: str = Field(..., description="Google oAuth2 platformasidan olingan id_token")
+    token: str = Field(..., description="Google ID Token (Frontend GIS orqali oladi)")
 
 
 class TokenResponse(BaseModel):

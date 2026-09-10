@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPulse - Google Sign-In Test</title>
+    <!-- Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f6f8;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 6px;
+            background: #eef2f5;
+            word-break: break-all;
+            text-align: left;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>CareerPulse Auth</h2>
+        <p>Google orqali tizimga kirishni test qilish</p>
+
+        <!-- Google Sign-In tugmasi joylashadigan konteyner -->
+        <div id="g_id_onload"
+             data-client_id="1036680655452-po5d8393tnm65o58melrhvhrbl6fphfc.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+
+        <div id="result">Kutilmoqda... Tokenlar shu yerda ko'rinadi.</div>
+    </div>
+
+    <script>
+        // Google bilan kirish muvaffaqiyatli bo'lganda ishlaydigan funksiya
+        async function handleCredentialResponse(response) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "<b>Google ID Token olindi!</b><br>FastAPI'ga yuborilmoqda...";
+
+            const googleIdToken = response.credential;
+
+            try {
+                // ⚠️ Manzilni /api/v1/auth/google (yoki /api/auth/google) ga o'zgartiring:
+                const apiResponse = await fetch('/api/v1/auth/google', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token: googleIdToken })
+                });
+
+                const data = await apiResponse.json();
+
+                if (apiResponse.ok) {
+                    resultDiv.style.color = "green";
+                    resultDiv.innerHTML = `
+                        <b>Muvaffaqiyatli kirdingiz! 🎉</b><br><br>
+                        <b>Access Token:</b><br>${data.access_token.substring(0, 30)}...<br><br>
+                        <b>Refresh Token:</b><br>${data.refresh_token.substring(0, 30)}...
+                    `;
+                    console.log("CareerPulse Tokens:", data);
+                } else {
+                    resultDiv.style.color = "red";
+                    resultDiv.innerHTML = `<b>Xatolik:</b> ${data.detail || 'Serverda xatolik'}`;
+                }
+            } catch (error) {
+                resultDiv.style.color = "red";
+                resultDiv.innerHTML = `<b>Tarmoq xatoligi:</b> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

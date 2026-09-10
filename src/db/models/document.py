@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.models.base import TimeStampedModel
 from src.db.models.user import User
-from typing import List
 
 
 class DocumentStatus(str, Enum):
@@ -45,10 +44,15 @@ class Document(TimeStampedModel):
         default=DocumentStatus.UPLOADED,
     )
 
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
     user: Mapped["User"] = relationship("User", back_populates="documents")
 
-    chunks: Mapped[List["Chunk"]] = relationship(
+    chunks: Mapped[list["Chunk"]] = relationship(
         "Chunk",
         back_populates="document",
         cascade="all, delete-orphan",

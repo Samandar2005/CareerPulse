@@ -9,6 +9,7 @@ from src.modules.auth.schemas import (
     TokenResponse,
     UserLoginRequest,
     UserRegisterRequest,
+    GoogleAuthRequest,
 )
 from src.modules.auth.service import AuthService
 from src.modules.auth.schemas import UserResponse
@@ -55,6 +56,22 @@ async def refresh_token(
     session: AsyncSession = Depends(get_database),
 ) -> TokenResponse:
     return await AuthService.refresh_tokens(refresh_data.refresh_token, session)
+
+@router.post(
+    "/google",
+    response_model=TokenResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Google ID Token orqali kirish yoki ro'yxatdan o'tish",
+)
+async def google_auth(
+    body: GoogleAuthRequest,
+    session: AsyncSession = Depends(get_database),
+) -> TokenResponse:
+    """
+    Frontend Google Sign-In (GIS) dan olingan ID Tokenni qabul qiladi,
+    uni Google serverlari orqali tekshiradi va CareerPulse Access/Refresh token beradi.
+    """
+    return await AuthService.authenticate_google(body.token, session)
 
 
 @router.get(
